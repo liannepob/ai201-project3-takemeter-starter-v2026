@@ -41,8 +41,7 @@
 
 <!-- Your community, and what your classifier sorts posts into. Three or four
      sentences. -->
-
-
+My community is r/Swimming, a public subreddit where people ask for advice on technique, training, and gear. My classifier will sort posts by how substantial they are, using features I can point to in the text. One is whether the poster shares their own experience (what they did or tried) before asking for advice, versus asking with no personal context. Another is whether the post shares a firsthand account of how something (like swim equipment or waterproof earphones) changed their swimming, as a report to the community rather than a question.
 
 ---
 
