@@ -53,61 +53,51 @@ whether you hit them:
 
 ## 1.
 
-<!-- Your criterion. It must name a number. -->
-
-
+Accuracy is at least 0.75 on the held-out test set.
 
 **Why this target:**
 
-
+With two labels, guessing gets about 50%, so 0.75 is clearly above chance but realistic for roughly 150 to 200 training posts.
 
 ---
 
 ## 2.
 
-<!-- Your criterion. -->
-
-
+Each label has an F1 of at least 0.65 on the held-out test set.
 
 **Why this target:**
 
-
+experience_share is likely my smaller label, so only a handful of its examples will land in the test split and its score will be jumpy. 0.65 is looser than my accuracy target for that reason.
 
 ---
 
 ## 3.
 
-<!-- Your criterion. -->
-
-
+No label is more than 60% of labels.csv.
 
 **Why this target:**
 
-
+This is stricter than the project's 70% cap, so the model can't score well just by guessing the majority label.
 
 ---
 
 ## 4.
 
-<!-- Your criterion. -->
-
-
+On the 20 posts I labeled cold, I agree with my own re-labels at least 85% of the time.
 
 **Why this target:**
 
-
+My decision rule (an explicit ask means question, otherwise experience_share) is simple enough that I should apply it consistently, and 85% leaves room for the genuinely borderline posts.
 
 ---
 
 ## 5.
 
-<!-- Your criterion. -->
-
-
+Predictions with confidence above 0.80 are correct at least 80% of the time.
 
 **Why this target:**
 
-
+A confident prediction should be more reliable than an unsure one, and 80% is a bar I'd honestly call useful.
 
 ---
 
