@@ -158,15 +158,18 @@ I labelled 20 posts cold, with no AI label shown. AI pre-labelled the other 150 
 
 <!-- Your starting model, your settings, and anything you changed and why. -->
 
-**Base model:**
+**Base model:** distilbert-base-uncased
 
-**Settings:** <!-- epochs, learning rate, batch size, seed -->
+**Settings:** <!-- epochs, learning rate, batch size, seed --> 3 epochs, learning rate 2e-5, batch size 16, seed 42, max length 128. Hardware: Apple Silicon GPU (device mps), torch 2.14.1.
 
-**Anything I changed from the defaults, and why:**
+**Anything I changed from the defaults, and why:** Nothing. I used the notebook's default training settings. The only edits to the notebook were setting LABELS to ["question", "experience_share"] and NAME to my name.
 
 **Split sizes:** <!-- train / val / test, and per-label counts in the test
 split. If a label had fewer than about 8 in test, say so — it explains a lot
 of next unit's variance. -->
+train 118 / val 26 / test 26 (70/15/15). Per-label test counts: question 15, experience_share 11. Neither label is under 8 in test, but 26 test posts is small, so one post moves accuracy by about 4 points. The dataset is 170 rows, under the 200 the brief asks for.
+
+Result for seed 42: accuracy 0.577, macro F1 0.366. The model predicted question for all 26 test posts, so experience_share F1 was 0.000. 0.577 is just the share of question posts in the test split, so this run did not learn the boundary. I'll diagnose it in unit 6 across three seeds.
 
 
 
