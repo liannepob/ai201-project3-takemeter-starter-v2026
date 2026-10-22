@@ -41,7 +41,7 @@
 
 <!-- Your community, and what your classifier sorts posts into. Three or four
      sentences. -->
-My community is r/Swimming, a public subreddit where people ask for advice on technique, training, and gear. My classifier will sort posts by how substantial they are, using features I can point to in the text. One is whether the poster shares their own experience (what they did or tried) before asking for advice, versus asking with no personal context. Another is whether the post shares a firsthand account of how something (like swim equipment or waterproof earphones) changed their swimming, as a report to the community rather than a question.
+My community is r/Swimming, a public subreddit where people ask for advice on technique, training, and gear. My classifier sorts each post into one of two labels: `question`, where the poster is mainly asking for advice or information, or `experience_share`, where the poster reports something that happened to them without asking for help. The line between them is whether the post contains an explicit ask. Posts that share a lot of personal experience but end with a request still count as `question`.
 
 ---
 
@@ -55,43 +55,43 @@ My community is r/Swimming, a public subreddit where people ask for advice on te
 
 ### `question`
 
-**Definition:** The post's goal is to recieve advice, information or tips, even if it includes the poster's own background.
+**Definition:** The post's goal is to receive advice, information or tips, even if it includes the poster's own background.
 
 **Example 1:**
 > Nose pressure doesn't allow me to swim. hello,
-
-I feel ridiculous for posting this because everyone seems to be able to do it fine but whenever I swim more than a few strokes, the pressure in my nose gets too high and when I inhale through my mouth out of the water the water inside my nose comes into my mouth and I feel like I’m drowning. it gets worse as I keep swimming longer. I can’t breathe/hum all the pressure out my nose in time before I have to come to breathe up again. it makes freestyle and breaststrke very hard but butterfly literally impossible.
-
-ive tried closing some muscle in the back of my throat right before breathing in. but it takes me a solid second to do so and I mess it up sometimes and water comes flooding in. It does keep water out though if I do it properly
-
-this also causes me to not be able to get enough air in before everything starts to turn black (I think?)
-
-thanks
+>
+> I feel ridiculous for posting this because everyone seems to be able to do it fine but whenever I swim more than a few strokes, the pressure in my nose gets too high and when I inhale through my mouth out of the water the water inside my nose comes into my mouth and I feel like I’m drowning. it gets worse as I keep swimming longer. I can’t breathe/hum all the pressure out my nose in time before I have to come to breathe up again. it makes freestyle and breaststrke very hard but butterfly literally impossible.
+>
+> ive tried closing some muscle in the back of my throat right before breathing in. but it takes me a solid second to do so and I mess it up sometimes and water comes flooding in. It does keep water out though if I do it properly
+>
+> this also causes me to not be able to get enough air in before everything starts to turn black (I think?)
+>
+> thanks
 
 
 
 
 **Example 2:**
 > Total beginner - some help please. I’ve started adult beginner swimming lessons , never swam before and was scared of even getting face in the water.
-
-I’m on lesson 4, I’ve gotten decent at front float (with or without aid) , back float with noodle, treading with noodle and surprisingly no issue with submerging face in water. I thought I was doing good until…
-
-My last 2 lessons which have involved using a single arm for the pull with a board and side breathing while on front with board. Breathing I thought I nearly got it but when I come for breath my propulsion forward seems to stop and other times I panic breath and swallow water
-
-I’m struggling with these things, mainly the breathing which is fine when I’m doing practice drills (face in, exhale , face out inhale) but as soon as I start front swimming I lose all my ability to breathe or coordinate. Any tips or practice drills people can recommend that I can do outside my lessons? Or even any advice at all
+>
+> I’m on lesson 4, I’ve gotten decent at front float (with or without aid) , back float with noodle, treading with noodle and surprisingly no issue with submerging face in water. I thought I was doing good until…
+>
+> My last 2 lessons which have involved using a single arm for the pull with a board and side breathing while on front with board. Breathing I thought I nearly got it but when I come for breath my propulsion forward seems to stop and other times I panic breath and swallow water
+>
+> I’m struggling with these things, mainly the breathing which is fine when I’m doing practice drills (face in, exhale , face out inhale) but as soon as I start front swimming I lose all my ability to breathe or coordinate. Any tips or practice drills people can recommend that I can do outside my lessons? Or even any advice at all
 
 ### `experience_share`
 
-**Definition:** The post reports something the poster did or how something changed their swimming, shared with the community and not mainly asking for help.
+**Definition:** The post reports something the poster did or experienced in the water, shared with the community and not explicitly asking for help.
 
 **Example 1:**
 > Finally clicked! I used to tire myself so much swimming front crawl (which surprised me because I can swim breaststroke pretty fast and for long distances) and only today realised that I've been over-kicking. Timed it to a 2-kick/stroke rhythm and swam so much more easily. Didn't realise I'd been tiring myself out and wasting energy. Keeping to the rhythm and being disciplined with that is helping a lot. Thank you to everyone who has talked about kicking here -- ended up passively absorbing a very helpful tip!
 
 **Example 2:**
 > Flip turns as a beginner
-Today's lesson I wanted to have a go at doing flip turns. After about 5/6 goes pushing off onto my back from Front Crawl. I couldn't mentally work out how to turn onto my stomach. Kept swerving into the lane divider. And getting tangled up and dizzy.
-
-Doesn't help when only in 1.2 mtr water!
+> Today's lesson I wanted to have a go at doing flip turns. After about 5/6 goes pushing off onto my back from Front Crawl. I couldn't mentally work out how to turn onto my stomach. Kept swerving into the lane divider. And getting tangled up and dizzy.
+>
+> Doesn't help when only in 1.2 mtr water!
 
 ### The hardest boundary
 
@@ -102,6 +102,8 @@ Doesn't help when only in 1.2 mtr water!
      if the tone is heated." -->
 If the post explicitly asks for advice, tips, or help (a question or a direct request), it's `question`, even when most of the text is personal experience. If there's no explicit ask, it's `experience_share`, even if the poster seems to be hoping for replies.
 
+**Example of the boundary:** The 'Flip turns as a beginner' post. It describes a struggle and never asks for help, so under my rule it's `experience_share`.
+
 
 ---
 
@@ -110,19 +112,19 @@ If the post explicitly asks for advice, tips, or help (a question or a direct re
 <!-- Where you collected from, how you labelled, your counts, and three hard
      cases. -->
 
-**Where the posts came from:**
+**Where the posts came from:** Public r/Swimming posts. Reddit blocked scripted access from my network, so I saved listing JSON from my browser and converted it to labels.csv with a Python script. Posts with no body text, removed or deleted posts, and mod threads were dropped, and duplicates were removed. This is not a random sample: most r/Swimming posts are questions, so I searched for progress and milestone posts to find enough experience_share examples, then sampled to balance the classes. A live feed would be mostly questions.
 
 **How I labelled them:** <!-- Cold first? Pre-labelled with AI and corrected?
 Say so plainly — the disclosure is required, not penalised. -->
+I labelled 20 posts cold, with no AI label shown. AI pre-labelled the other 150 using my written rule, and I reviewed them afterwards: 140 marked checked, 10 corrected by me, and 0 not individually verified.
 
 **Counts per label:**
 
 | Label | Count | Share |
 |---|---|---|
-|  |  |  |
-|  |  |  |
-|  |  |  |
-| **Total** |  | 100% |
+| `question` | 96 | 56.5% |
+| `experience_share` | 74 | 43.5% |
+| **Total** | 170 | 100% |
 
 **Three hard cases**
 
@@ -130,25 +132,25 @@ Say so plainly — the disclosure is required, not penalised. -->
      been, and what you chose. These are worth more than the easy 190. -->
 
 **1.**
-> *The post:*
+> *The post:* "Summer McIntosh 200 Fly WR", a news post about a world record with no ask.
 >
-> *Could have been:*
+> *Could have been:* experience_share (no ask), or neither, since the poster did not do or experience anything in the water.
 >
-> *I chose, because:*
+> *I chose, because:* experience_share, because my rule says no explicit ask means experience_share and it was the closest fit.
 
 **2.**
-> *The post:*
+> *The post:* "Started swimming classes while having aquaphobia". Mostly a progress story, but it near the end says "Any tips for an absolute beginner (with a phobia), are welcome!"
 >
-> *Could have been:*
+> *Could have been:* experience_share (the story is most of the text) or question (it closes with a request for tips).
 >
-> *I chose, because:*
+> *I chose, because:* question, because the closing line is an explicit request for tips, and my rule says an explicit ask makes it a question even when most of the post is personal experience.
 
 **3.**
-> *The post:*
+> *The post:* "Told an old lady to shut up today". A story about a confrontation at the pool.
 >
-> *Could have been:*
+> *Could have been:* experience_share (it recounts something that happened) or question (it ends by asking whether they should have shared the lane).
 >
-> *I chose, because:*
+> *I chose, because:* question, because it ends with an explicit question asking for a judgment, and my rule treats an explicit ask as the deciding factor.
 
 ---
 
