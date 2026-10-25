@@ -238,11 +238,11 @@ Result for seed 42: accuracy 0.577, macro F1 0.366. The model predicted question
 
 | Criterion | Target | Seed 42 | Seed 7 | Seed 2024 | Verdict |
 |---|---|---|---|---|---|
-| 1. Accuracy is at least 0.75 on the held-out test set. | ≥ 0.75 | 0.577 | 0.577 | 0.577 |  |
-| 2. Each label has an F1 of at least 0.65 on the held-out test set. | ≥ 0.65 each | question 0.732 · experience_share 0.000 | question 0.732 · experience_share 0.000 | question 0.732 · experience_share 0.000 |  |
-| 3. No label is more than 60% of labels.csv. | ≤ 60% | 56.5% (question 96/170) | 56.5% (question 96/170) | 56.5% (question 96/170) |  |
-| 4. On the 20 posts I labeled cold, I agree with my own re-labels at least 85% of the time. | ≥ 85% | not measured | not measured | not measured |  |
-| 5. Predictions with confidence above 0.80 are correct at least 80% of the time. | ≥ 80% | not recorded (most-confident third: 0.750) | not recorded (most-confident third: 0.750) | not recorded (most-confident third: 0.875) |  |
+| 1. Accuracy is at least 0.75 on the held-out test set. | ≥ 0.75 | 0.577 | 0.577 | 0.577 | MISSED |
+| 2. Each label has an F1 of at least 0.65 on the held-out test set. | ≥ 0.65 each | question 0.732 · experience_share 0.000 | question 0.732 · experience_share 0.000 | question 0.732 · experience_share 0.000 | MISSED |
+| 3. No label is more than 60% of labels.csv. | ≤ 60% | 56.5% (question 96/170) | 56.5% (question 96/170) | 56.5% (question 96/170) | MET |
+| 4. On the 20 posts I labeled cold, I agree with my own re-labels at least 85% of the time. | ≥ 85% | not measured | not measured | not measured | NOT MEASURED, I haven't re-labelled them yet |
+| 5. Predictions with confidence above 0.80 are correct at least 80% of the time. | ≥ 80% | not recorded (most-confident third: 0.750) | not recorded (most-confident third: 0.750) | not recorded (most-confident third: 0.875) | NOT MEASURED, per-post confidence wasn't saved |
 
 ### Confusion matrix
 
@@ -272,11 +272,11 @@ Seed 42 (section 7 prints the first seed; seeds 7 and 2024 produced the identica
 
 | # | Criterion | Target | Verdict | How I decided |
 |---|---|---|---|---|
-| 1 |  |  |  |  |
-| 2 |  |  |  |  |
-| 3 |  |  |  |  |
-| 4 |  |  |  |  |
-| 5 |  |  |  |  |
+| 1 | Accuracy is at least 0.75 on the held-out test set. | ≥ 0.75 | MISSED (before and after) | Before: 0.577 on seeds 42, 7 and 2024. After: 0.692 (seed 42), 0.500 (seed 7), 0.654 (seed 2024). Every seed in both runs is below 0.75, and seed 7 after is the lowest. |
+| 2 | Each label has an F1 of at least 0.65 on the held-out test set. | ≥ 0.65 each | MISSED (before and after) | Before: question 0.732 on every seed, but experience_share 0.000 on every seed, so all three seeds break it. After: experience_share 0.600 / 0.133 / 0.526 (seeds 42 / 7 / 2024), below 0.65 on all three. question 0.750 / 0.649 / 0.727, so seed 7 also misses on question. |
+| 3 | No label is more than 60% of labels.csv. | ≤ 60% | MET | question is 96 of 170 rows (56.5%) and experience_share is 74 (43.5%). This is a property of labels.csv, so it is the same on every seed and in both runs. |
+| 4 | On the 20 posts I labeled cold, I agree with my own re-labels at least 85% of the time. | ≥ 85% | NOT MEASURED, I haven't re-labelled them yet | No seed produces this number. It needs a second labelling pass over my 20 cold posts, which I haven't done. |
+| 5 | Predictions with confidence above 0.80 are correct at least 80% of the time. | ≥ 80% | NOT MEASURED, per-post confidence wasn't saved (counted as not met) | The notebook saves accuracy for the most and least confident thirds, not each post's confidence, so I can't check the 0.80 cutoff. For reference, the most-confident third scored 0.750 / 0.750 / 0.875 before and 0.875 / 0.750 / 1.000 after (seeds 42 / 7 / 2024). |
 
 **Diagnoses**
 
@@ -288,6 +288,16 @@ Seed 42 (section 7 prints the first seed; seeds 7 and 2024 produced the identica
      ⚠️ Use your agreement report as evidence. It is the only instrument you
      have that can tell a LABELLING problem from a MODEL problem, and this
      section is graded on whether you used it that way. -->
+
+**Criteria 1 and 2, before (3 epochs).** The model called every test post question on all three seeds. The matrix has 11 experience_share posts called question and 0 the other way, and accuracy is 0.577, which is exactly the question share of the test split (15/26). The zero spread across seeds is the same failure three times, not stability. Raising epochs to 10 changed this, which tells me too little training was part of the cause.
+
+**Criterion 1, after (10 epochs).** Accuracy is 0.692, 0.500 and 0.654, so every seed is still under 0.75, and the spread is 19.2 points. With only 26 test posts, one post moves accuracy by about 4 points, so a swing this big means the measure itself is unstable. I think the main cause is too little data, since the model only trains on 118 posts.
+
+**Criterion 2, after (10 epochs).** The model now predicts both labels, but experience_share F1 is 0.600, 0.133 and 0.526, below 0.65 on every seed, and seed 7 caught only 1 of its 11 experience_share posts. Only 11 experience_share posts land in each test split, so a few posts swing this score a lot. The boundary is also fuzzy in my own data: hard cases 2 and 3 are personal stories that I labelled question because of a closing ask, which may teach the model that story-like posts are question.
+
+**What I can't tell yet.** My agreement report against the staff set is not available yet, so I can't separate a labelling problem from a model problem. Until I have it, too few examples and a fuzzy boundary are both possible causes for the experience_share misses, and I can't say which matters more.
+
+**Criteria 4 and 5.** Neither produced a number. Criterion 4 needs a re-labelling pass I haven't done. Criterion 5 can't be checked as written because the notebook doesn't save each post's confidence, so I count it as not met.
 
 
 
@@ -357,11 +367,11 @@ Seed 42 (section 7 prints the first seed; seeds 7 and 2024 produced the identica
 
 | Criterion | Target | Seed 42 | Seed 7 | Seed 2024 | Verdict |
 |---|---|---|---|---|---|
-| 1. Accuracy is at least 0.75 on the held-out test set. | ≥ 0.75 | 0.692 | 0.500 | 0.654 |  |
-| 2. Each label has an F1 of at least 0.65 on the held-out test set. | ≥ 0.65 each | question 0.750 · experience_share 0.600 | question 0.649 · experience_share 0.133 | question 0.727 · experience_share 0.526 |  |
-| 3. No label is more than 60% of labels.csv. | ≤ 60% | 56.5% (question 96/170) | 56.5% (question 96/170) | 56.5% (question 96/170) |  |
-| 4. On the 20 posts I labeled cold, I agree with my own re-labels at least 85% of the time. | ≥ 85% | not measured | not measured | not measured |  |
-| 5. Predictions with confidence above 0.80 are correct at least 80% of the time. | ≥ 80% | not recorded (most-confident third: 0.875) | not recorded (most-confident third: 0.750) | not recorded (most-confident third: 1.000) |  |
+| 1. Accuracy is at least 0.75 on the held-out test set. | ≥ 0.75 | 0.692 | 0.500 | 0.654 | MISSED |
+| 2. Each label has an F1 of at least 0.65 on the held-out test set. | ≥ 0.65 each | question 0.750 · experience_share 0.600 | question 0.649 · experience_share 0.133 | question 0.727 · experience_share 0.526 | MISSED |
+| 3. No label is more than 60% of labels.csv. | ≤ 60% | 56.5% (question 96/170) | 56.5% (question 96/170) | 56.5% (question 96/170) | MET |
+| 4. On the 20 posts I labeled cold, I agree with my own re-labels at least 85% of the time. | ≥ 85% | not measured | not measured | not measured | NOT MEASURED, I haven't re-labelled them yet |
+| 5. Predictions with confidence above 0.80 are correct at least 80% of the time. | ≥ 80% | not recorded (most-confident third: 0.875) | not recorded (most-confident third: 0.750) | not recorded (most-confident third: 1.000) | NOT MEASURED, per-post confidence wasn't saved |
 
 **Did it help, and how do I know:**
 
