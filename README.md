@@ -212,14 +212,16 @@ Result for seed 42: accuracy 0.577, macro F1 0.366. The model predicted question
 
 | Measure | Baseline | Trained | Difference |
 |---|---|---|---|
-| Overall accuracy |  |  |  |
-| Macro F1 |  |  |  |
-| F1 — `label_one` |  |  |  |
-| F1 — `label_two` |  |  |  |
-
+| Overall accuracy | 0.500 | 0.577 | +0.077 |
+| Macro F1 | 0.461 | 0.366 | -0.095 |
+| F1 — `experience_share` | 0.606 | 0.000 | -0.606 |
+| F1 — `question` | 0.316 | 0.732 | +0.416 |
 **What I predicted before I looked:**
+
 <!-- Milestone 1 asks you to write this BEFORE seeing the trained numbers. A
      prediction made afterwards isn't one. -->
+
+     My seed 42 model called every test post `question`, so I expect the baseline to beat it on `experience_share`. I expect the baseline to still struggle on posts that tell a story and end with a small ask, since that's my hardest boundary.
 
 **What the gap actually means:**
 <!-- If the baseline matched your trained model, your fine-tuning added

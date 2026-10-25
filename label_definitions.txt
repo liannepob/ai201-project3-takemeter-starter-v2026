@@ -1,9 +1,2 @@
-# Your label definitions, one per line, as `label: definition`.
-#
-# Copy these from your README so the baseline is judged on exactly the
-# definitions you wrote. baseline.py reads this file.
-#
-# Delete the examples below and put yours in.
-
 question: The post's goal is to receive advice, information or tips, even if it includes the poster's own background.
 experience_share: The post reports something the poster did or experienced in the water, shared with the community and not explicitly asking for help.
