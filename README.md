@@ -349,7 +349,7 @@ Seed 42 (section 7 prints the first seed; seeds 7 and 2024 produced the identica
 
 ## The Improvement
 
-**What I changed:**
+**What I changed:** Raised epochs from 3 to 10, one change only.
 
 **Which diagnosis pointed at it:**
 
@@ -357,11 +357,11 @@ Seed 42 (section 7 prints the first seed; seeds 7 and 2024 produced the identica
 
 | Criterion | Target | Seed 42 | Seed 7 | Seed 2024 | Verdict |
 |---|---|---|---|---|---|
-| 1.  |  |  |  |  |  |
-| 2.  |  |  |  |  |  |
-| 3.  |  |  |  |  |  |
-| 4.  |  |  |  |  |  |
-| 5.  |  |  |  |  |  |
+| 1. Accuracy is at least 0.75 on the held-out test set. | ≥ 0.75 | 0.692 | 0.500 | 0.654 |  |
+| 2. Each label has an F1 of at least 0.65 on the held-out test set. | ≥ 0.65 each | question 0.750 · experience_share 0.600 | question 0.649 · experience_share 0.133 | question 0.727 · experience_share 0.526 |  |
+| 3. No label is more than 60% of labels.csv. | ≤ 60% | 56.5% (question 96/170) | 56.5% (question 96/170) | 56.5% (question 96/170) |  |
+| 4. On the 20 posts I labeled cold, I agree with my own re-labels at least 85% of the time. | ≥ 85% | not measured | not measured | not measured |  |
+| 5. Predictions with confidence above 0.80 are correct at least 80% of the time. | ≥ 80% | not recorded (most-confident third: 0.875) | not recorded (most-confident third: 0.750) | not recorded (most-confident third: 1.000) |  |
 
 **Did it help, and how do I know:**
 
