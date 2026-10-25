@@ -186,17 +186,17 @@ Result for seed 42: accuracy 0.577, macro F1 0.366. The model predicted question
 
 **Moment 1**
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- *What I asked for:* I asked Claude Code to run section 1, section 6 and section 7 of the notebook for the before and after three-seed runs, without re-running the section 5 lines that overwrite results.json and test_split.csv, and to fill in both Run Log tables from criteria.md and the JSON files.
+- *What came back:* The per-seed numbers, the confusion matrix, and both Run Log tables filled with my criteria and the per-seed values. It also pointed out that the before run's zero spread was the same all-question failure three times, not stability, and that criteria 4 and 5 had no number it could fill in.
+- *What I changed:* I checked the numbers against the notebook output and the JSON files.
 
 **Moment 2**
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- *What I asked for:* I asked Claude Code to draft the verdicts and the diagnosis paragraphs, and later this end-of-unit write-up, in first person and using only facts I supplied plus the JSON numbers.
+- *What came back:* Draft verdicts, the Verdicts and Diagnoses table, and short diagnosis paragraphs. It also flagged that my agreement report was missing, so the diagnoses couldn't separate a labelling problem from a model problem.
+- *What I changed:* I supplied the facts the drafts had to use and checked them against the README numbers, and I kept the wording as drafted rather than rewriting it.
 
-**Pre-labelling disclosure:**
+**Pre-labelling disclosure:** I labelled 20 posts cold, with no AI label shown. AI pre-labelled the other 150 using my written rule, and I reviewed them afterwards: 140 checked, 10 corrected by me, and 0 not individually verified.
 
 <!-- ═══════════════════════ UNIT 6 — THE TEST ═══════════════════════
 
@@ -216,16 +216,18 @@ Result for seed 42: accuracy 0.577, macro F1 0.366. The model predicted question
 | Macro F1 | 0.461 | 0.366 | -0.095 |
 | F1 — `experience_share` | 0.606 | 0.000 | -0.606 |
 | F1 — `question` | 0.316 | 0.732 | +0.416 |
+
 **What I predicted before I looked:**
 
 <!-- Milestone 1 asks you to write this BEFORE seeing the trained numbers. A
      prediction made afterwards isn't one. -->
 
-     My seed 42 model called every test post `question`, so I expect the baseline to beat it on `experience_share`. I expect the baseline to still struggle on posts that tell a story and end with a small ask, since that's my hardest boundary.
+My seed 42 model called every test post `question`, so I expect the baseline to beat it on `experience_share`. I expect the baseline to still struggle on posts that tell a story and end with a small ask, since that's my hardest boundary.
 
 **What the gap actually means:**
 <!-- If the baseline matched your trained model, your fine-tuning added
      nothing — and that is a real finding, not a failure. Say it plainly. -->
+The trained model beat the baseline on accuracy (0.577 against 0.500) only because it called every post question, and 15 of the 26 test posts are question. The baseline was the better classifier on experience_share, with an F1 of 0.606 against my model's 0.000, and it also had the higher macro F1 (0.461 against 0.366), so at that point fine-tuning added nothing. The baseline leaned the other way, catching 10 of 11 experience_share posts but only 3 of 15 question posts. Both models were scored on the same 26 posts, but that is the seed 42 test split only, so I have no baseline numbers for seeds 7 and 2024.
 
 
 
@@ -260,6 +262,7 @@ Seed 42 (section 7 prints the first seed; seeds 7 and 2024 produced the identica
 <!-- Not "the model made mistakes" — WHICH boundary it didn't learn, and which
      direction. "7 real analysis posts were called hot_take and only 3 went the
      other way" is a direction, not just an error rate. -->
+11 real experience_share posts were called question and 0 went the other way, identically on all three seeds, so the model never learned the question/experience_share boundary and defaulted to question every time.
 
 
 
@@ -313,6 +316,8 @@ Seed 42 (section 7 prints the first seed; seeds 7 and 2024 produced the identica
 
 **Agreement rate:** ___ / 30 = ___%
 
+Not completed. I labelled all 30 staff posts under the staff taxonomy (my_staff_labels.csv), but I didn't have data/staff_labels.csv from my TF before the deadline, so I couldn't run agreement.py or adjudicate any disagreements.
+
 <!-- Nobody grades this number. A 60% who argues every disagreement from the
      stated rules beats a 95% who wrote "staff was right" nine times. Several
      of the 30 were chosen because they're genuinely ambiguous — you should be
@@ -361,7 +366,7 @@ Seed 42 (section 7 prints the first seed; seeds 7 and 2024 produced the identica
 
 **What I changed:** Raised epochs from 3 to 10, one change only.
 
-**Which diagnosis pointed at it:**
+**Which diagnosis pointed at it:** The before matrix showed every post called question on every seed, which looked like an under-trained model, so I raised epochs from 3 to 10. My agreement report against the staff set wasn't available, so I couldn't separate a labelling problem from a model problem, and this was a best guess. Training changes are usually not what a diagnosis points at, so I treat this as a test of the under-training idea rather than a fix the evidence demanded.
 
 ### Run Log — After
 
@@ -378,6 +383,8 @@ Seed 42 (section 7 prints the first seed; seeds 7 and 2024 produced the identica
 <!-- If it didn't, say so. Relabelling that didn't help is a genuinely
      interesting result and earns full credit. -->
 
+Partly. Averaged over the three seeds, accuracy went from 0.577 to 0.615, macro F1 from 0.366 to 0.564, and experience_share F1 from 0.000 to 0.420, and the model now predicts both labels on every seed. Seeds 42 and 2024 beat the all-question accuracy of 0.577 (0.692 and 0.654), but seed 7 caught only 1 of 11 experience_share posts and scored 0.500. The accuracy spread went from 0.0 to 19.2 points, and with 26 test posts one post is about 4 points, so one change can't separate a real gain from a lucky split.
+
 
 
 ---
@@ -386,11 +393,20 @@ Seed 42 (section 7 prints the first seed; seeds 7 and 2024 produced the identica
 
 <!-- For each criterion still missed: what you'd do, and why you stopped. -->
 
+**Criterion 1 (accuracy at least 0.75).** I would label more posts, especially experience_share, and use a larger test split so one post moves accuracy by less than 4 points. I stopped because I ran out of time before the deadline.
+
+**Criterion 2 (every label F1 at least 0.65).** experience_share is still the weak label (0.600, 0.133 and 0.526 after the fix), so I would add more experience_share posts and check my boundary against the staff agreement report before relabelling anything. I stopped because the unit allows one improvement and I used it on epochs.
+
+**Criterion 4 (self-agreement at least 85%).** I would re-label the 20 cold posts blind with blind_relabel.py and compare against my original labels. I wrote the script but ran out of time to do the re-label.
+
+**Criterion 5 (confidence above 0.80 correct at least 80% of the time).** I would change the notebook to save each post's confidence so the 0.80 cutoff can actually be checked. I stopped because changing the notebook would have been a second change in this unit.
+
 
 
 **The gap between what I meant my labels to capture and what the model
 learned:**
 <!-- Two sentences. Your confusion matrix is the evidence. -->
+I meant question and experience_share to turn on whether the post makes an explicit ask, but the matrix shows the model mostly learned to predict question and misses experience_share posts (all 11 before the fix, and 5, 10 and 6 of 11 after it). My guess is that posts like my hard cases 2 and 3, which tell a story but end with a small ask and so are labelled question, taught the model that story-like posts are question, which makes it miss real experience_share stories that have no ask.
 
 
 
